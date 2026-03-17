@@ -8,96 +8,117 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        /* Memastikan kelancaran scroll saat klik menu sidebar */
         html { scroll-behavior: smooth; }
-        section { padding-top: 20px; min-height: 400px; }
-        .sidebar { height: 100vh; background: var(--merah-candy); }
-        .nav-link:hover { background: rgba(255,255,255,0.1); border-radius: 5px; }
+        .sidebar { height: 100vh; background: var(--merah-candy); position: fixed; z-index: 1000; }
+        .main-content { margin-left: 16.666667%; padding: 20px; }
+        section { padding-top: 20px; margin-bottom: 40px; }
+        .form-label { font-weight: bold; font-size: 0.9rem; margin-bottom: 2px; }
+        .card-custom { border-radius: 15px; border: none; }
+        .btn-simpan { background-color: var(--merah-candy); color: white; font-weight: bold; border-radius: 8px; }
+        .btn-simpan:hover { background-color: #a00000; color: white; }
     </style>
 </head>
 <body>
 
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-md-2 d-none d-md-block sidebar shadow-lg position-fixed">
+        <nav class="col-md-2 d-none d-md-block sidebar shadow-lg">
             <div class="text-center mb-4">
-                <img src="assets/img/logo-bekasi.png" width="70" alt="Logo" class="mt-3">
+                <img src="assets/img/logo-bekasi.png" width="80" alt="Logo Bekasi" class="mt-4 shadow-sm rounded-circle p-2 bg-white">
                 <h6 class="mt-2 fw-bold text-white">SIAKAD BEKASI</h6>
+                <small class="text-white-50">Sistem Informasi Akademik</small>
             </div>
             <ul class="nav flex-column">
                 <li class="nav-item"><a href="#sekolah" class="nav-link text-white"><i class="fas fa-school me-2"></i> Identitas Sekolah</a></li>
-                <li class="nav-item"><a href="#kepsek" class="nav-link text-white"><i class="fas fa-user-tie me-2"></i> Identitas Kepsek</a></li>
-                <li class="nav-item"><a href="#murid" class="nav-link text-white"><i class="fas fa-users me-2"></i> Data Murid</a></li>
+                <li class="nav-item"><a href="#kepsek" class="nav-link text-white"><i class="fas fa-user-tie me-2"></i> Identitas Kepsek & Surat</a></li>
+                <li class="nav-item"><a href="#murid" class="nav-link text-white"><i class="fas fa-users me-2"></i> Data Murid & Import</a></li>
                 <li class="nav-item"><a href="#cetak" class="nav-link text-white"><i class="fas fa-print me-2"></i> Menu Cetak F4</a></li>
-                <li class="nav-item"><a href="#" onclick="location.reload()" class="nav-link text-white"><i class="fas fa-sync me-2"></i> Refresh App</a></li>
             </ul>
         </nav>
 
-        <main class="col-md-10 ms-sm-auto px-md-4 py-4" style="margin-left: 16.6%;">
+        <main class="col-md-10 main-content">
             
             <section id="sekolah">
-                <div class="card card-custom p-4 mb-4 shadow-sm">
-                    <h5 class="fw-bold mb-3" style="color: var(--merah-candy);"><i class="fas fa-school"></i> Identitas Sekolah</h5>
+                <div class="card card-custom p-4 shadow-sm">
+                    <h5 class="fw-bold mb-4" style="color: var(--merah-candy); border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                        <i class="fas fa-university me-2"></i> Identitas Sekolah (Untuk KOP Surat)
+                    </h5>
                     <div class="row g-3">
                         <div class="col-md-6"><label class="form-label">Nama Sekolah</label><input type="text" id="sk-nama" class="form-control" placeholder="SDN MUARA BAKTI 01"></div>
-                        <div class="col-md-6"><label class="form-label">NPSN</label><input type="text" id="sk-npsn" class="form-control"></div>
-                        <div class="col-md-12"><label class="form-label">Alamat</label><input type="text" id="sk-alamat" class="form-control"></div>
+                        <div class="col-md-3"><label class="form-label">NPSN</label><input type="text" id="sk-npsn" class="form-control"></div>
+                        <div class="col-md-3"><label class="form-label">Status</label><select id="sk-status" class="form-select"><option>Negeri</option><option>Swasta</option></select></div>
+                        <div class="col-md-12"><label class="form-label">Alamat Lengkap</label><input type="text" id="sk-alamat" class="form-control"></div>
+                        <div class="col-md-4"><label class="form-label">Desa/Kelurahan</label><input type="text" id="sk-desa" class="form-control"></div>
+                        <div class="col-md-4"><label class="form-label">Kecamatan</label><input type="text" id="sk-kec" class="form-control"></div>
+                        <div class="col-md-4"><label class="form-label">Kabupaten/Kota</label><input type="text" id="sk-kab" class="form-control" value="Bekasi"></div>
+                        <div class="col-md-3"><label class="form-label">Kode Pos</label><input type="text" id="sk-pos" class="form-control"></div>
+                        <div class="col-md-4"><label class="form-label">Provinsi</label><input type="text" id="sk-prov" class="form-control" value="Jawa Barat"></div>
+                        <div class="col-md-5"><label class="form-label">Email Sekolah</label><input type="email" id="sk-email" class="form-control"></div>
+                        <div class="col-md-6"><label class="form-label">Kurikulum</label><select id="sk-kurikulum" class="form-select"><option>Kurikulum Merdeka</option><option>Kurikulum 2013</option></select></div>
+                        <div class="col-md-6"><label class="form-label">Tahun Pelajaran</label><input type="text" id="sk-tp" class="form-control" placeholder="2024/2025"></div>
                     </div>
-                    <button class="btn btn-danger mt-3 w-25">SIMPAN</button>
+                    <button class="btn btn-simpan mt-4 w-25 shadow-sm" onclick="saveData('sekolah')">SIMPAN IDENTITAS SEKOLAH</button>
                 </div>
             </section>
 
             <section id="kepsek">
-                <div class="card card-custom p-4 mb-4 shadow-sm">
-                    <h5 class="fw-bold mb-3" style="color: var(--merah-candy);"><i class="fas fa-user-tie"></i> Identitas Kepala Sekolah</h5>
+                <div class="card card-custom p-4 shadow-sm">
+                    <h5 class="fw-bold mb-4" style="color: var(--merah-candy); border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                        <i class="fas fa-pen-nib me-2"></i> Identitas Kepsek, Mapel Mulok & Surat
+                    </h5>
                     <div class="row g-3">
-                        <div class="col-md-6"><label class="form-label">Nama Kepala Sekolah</label><input type="text" id="ks-nama" class="form-control"></div>
+                        <div class="col-md-6"><label class="form-label">Nama Kepala Sekolah</label><input type="text" id="ks-nama" class="form-control" placeholder="ROHIMAH, S.Pd"></div>
                         <div class="col-md-6"><label class="form-label">NIP</label><input type="text" id="ks-nip" class="form-control"></div>
+                        
+                        <div class="col-12 mt-3 fw-bold text-muted small"><i class="fas fa-book me-1"></i> Mapel Muatan Lokal</div>
+                        <div class="col-md-4"><label class="form-label">Mulok 1</label><input type="text" id="mulok-1" class="form-control" value="Bahasa Sunda"></div>
+                        <div class="col-md-4"><label class="form-label">Mulok 2</label><input type="text" id="mulok-2" class="form-control" value="Bahasa Inggris"></div>
+                        <div class="col-md-4"><label class="form-label">Mulok 3</label><input type="text" id="mulok-3" class="form-control" value="Komputer"></div>
+                        
+                        <div class="col-12 mt-3 fw-bold text-muted small"><i class="fas fa-file-alt me-1"></i> Pengaturan Penomoran Surat</div>
+                        <div class="col-md-8"><label class="form-label">Nomor Surat (Template)</label><input type="text" id="surat-no" class="form-control" placeholder="400.3.12.1/040/SD.37/VI/2025"></div>
+                        <div class="col-md-4"><label class="form-label">Tanggal Surat</label><input type="date" id="surat-tgl" class="form-control"></div>
+                        <div class="col-md-12"><label class="form-label">Nama Kota Penandatanganan</label><input type="text" id="surat-kota" class="form-control" value="Bekasi"></div>
                     </div>
-                    <button class="btn btn-danger mt-3 w-25">SIMPAN</button>
+                    <button class="btn btn-simpan mt-4 w-25 shadow-sm" onclick="saveData('kepsek')">SIMPAN DATA KEPSEK & SURAT</button>
                 </div>
             </section>
 
             <section id="murid">
-                <div class="card card-custom p-4 mb-4 shadow-sm">
+                <div class="card card-custom p-4 shadow-sm">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold m-0" style="color: var(--merah-candy);"><i class="fas fa-users"></i> Data Murid & Import CSV</h5>
                         <div>
                             <input type="file" id="csvFileInput" accept=".csv" onchange="importCSV(event)" class="d-none">
-                            <button onclick="document.getElementById('csvFileInput').click()" class="btn btn-dark btn-sm">
-                                <i class="fas fa-file-import me-1"></i> Import CSV
+                            <button onclick="document.getElementById('csvFileInput').click()" class="btn btn-dark btn-sm shadow-sm">
+                                <i class="fas fa-file-import me-1"></i> Import CSV Murid
                             </button>
                         </div>
                     </div>
 
                     <div class="bg-light p-3 rounded border mb-4">
                         <label class="small fw-bold mb-2">Pilih Siswa untuk Validasi / Cetak:</label>
-                        <select id="select-murid" class="form-select border-primary">
+                        <select id="select-murid" class="form-select border-primary shadow-sm">
                             <option value="">-- Cari Nama Anak --</option>
                         </select>
                     </div>
 
                     <div class="row g-3">
-                        <div class="col-md-4"><label class="form-label">Nomor Peserta</label><input type="text" id="input-nopes" class="form-control" readonly></div>
-                        <div class="col-md-4"><label class="form-label">NISN</label><input type="text" id="input-nisn" class="form-control" readonly></div>
-                        <div class="col-md-4"><label class="form-label">NIS</label><input type="text" id="input-nis" class="form-control" readonly></div>
-                        <div class="col-md-8"><label class="form-label">Nama Lengkap Murid</label><input type="text" id="input-nama" class="form-control" readonly></div>
-                        <div class="col-md-4"><label class="form-label">Jenis Kelamin</label><input type="text" id="input-jk" class="form-control" readonly></div>
-                        <div class="col-md-4"><label class="form-label">Tempat Lahir</label><input type="text" id="input-tmp" class="form-control" readonly></div>
-                        <div class="col-md-4"><label class="form-label">Tanggal Lahir</label><input type="text" id="input-tgl" class="form-control" readonly></div>
-                        <div class="col-md-4"><label class="form-label">Nama Ortu</label><input type="text" id="input-ortu" class="form-control" readonly></div>
+                        <div class="col-md-4"><label class="form-label">NISN</label><input type="text" id="input-nisn" class="form-control bg-white" readonly></div>
+                        <div class="col-md-8"><label class="form-label">Nama Lengkap Murid</label><input type="text" id="input-nama" class="form-control bg-white" readonly></div>
                     </div>
                 </div>
             </section>
 
             <section id="cetak">
-                <div class="card card-custom p-4 mb-4 shadow-sm">
-                    <h5 class="fw-bold mb-3" style="color: var(--merah-candy);"><i class="fas fa-print"></i> Menu Cetak Dokumen (F4)</h5>
-                    <div class="row g-3">
-                        <div class="col-md-4"><a href="templates/kelulusan.html" target="_blank" class="btn btn-outline-danger w-100 py-3">Surat Kelulusan</a></div>
-                        <div class="col-md-4"><a href="templates/skkb.html" target="_blank" class="btn btn-outline-danger w-100 py-3">Surat Kelakuan Baik</a></div>
-                        <div class="col-md-4"><a href="templates/surat_nisn.html" target="_blank" class="btn btn-outline-danger w-100 py-3">Keterangan NISN</a></div>
-                        <div class="col-md-4"><a href="templates/transkrip_nilai.html" target="_blank" class="btn btn-outline-danger w-100 py-3">Transkrip Nilai</a></div>
+                <div class="card card-custom p-4 shadow-sm border-start border-danger border-5">
+                    <h5 class="fw-bold mb-3" style="color: var(--merah-candy);"><i class="fas fa-print"></i> Menu Cetak Dokumen (Format F4)</h5>
+                    <p class="small text-muted mb-4">Pastikan data sekolah dan murid sudah disimpan sebelum mencetak.</p>
+                    <div class="row g-3 text-center">
+                        <div class="col-md-4"><a href="templates/kelulusan.html" target="_blank" class="btn btn-outline-danger w-100 py-3 fw-bold"><i class="fas fa-graduation-cap d-block mb-2 fa-2x"></i> Kelulusan</a></div>
+                        <div class="col-md-4"><a href="templates/skkb.html" target="_blank" class="btn btn-outline-danger w-100 py-3 fw-bold"><i class="fas fa-user-shield d-block mb-2 fa-2x"></i> SKKB</a></div>
+                        <div class="col-md-4"><a href="templates/surat_nisn.html" target="_blank" class="btn btn-outline-danger w-100 py-3 fw-bold"><i class="fas fa-id-card d-block mb-2 fa-2x"></i> Ket. NISN</a></div>
+                        <div class="col-md-4"><a href="templates/transkrip_nilai.html" target="_blank" class="btn btn-outline-danger w-100 py-3 fw-bold"><i class="fas fa-list-ol d-block mb-2 fa-2x"></i> Transkrip Nilai</a></div>
                     </div>
                 </div>
             </section>
@@ -108,5 +129,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/app.js"></script>
+<script>
+    // Fungsi sederhana untuk simulasi simpan data
+    function saveData(type) {
+        alert("Data " + type + " Berhasil Disimpan ke Local Storage!");
+    }
+</script>
 </body>
 </html>
