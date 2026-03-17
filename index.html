@@ -7,6 +7,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Memastikan kelancaran scroll saat klik menu sidebar */
+        html { scroll-behavior: smooth; }
+        section { padding-top: 20px; min-height: 400px; }
+        .sidebar { height: 100vh; background: var(--merah-candy); }
+        .nav-link:hover { background: rgba(255,255,255,0.1); border-radius: 5px; }
+    </style>
 </head>
 <body>
 
@@ -14,60 +21,84 @@
     <div class="row">
         <nav class="col-md-2 d-none d-md-block sidebar shadow-lg position-fixed">
             <div class="text-center mb-4">
-                <img src="logo-bekasi.png" width="70" alt="Logo Bekasi" class="mt-3">
+                <img src="assets/img/logo-bekasi.png" width="70" alt="Logo" class="mt-3">
                 <h6 class="mt-2 fw-bold text-white">SIAKAD BEKASI</h6>
             </div>
             <ul class="nav flex-column">
                 <li class="nav-item"><a href="#sekolah" class="nav-link text-white"><i class="fas fa-school me-2"></i> Identitas Sekolah</a></li>
                 <li class="nav-item"><a href="#kepsek" class="nav-link text-white"><i class="fas fa-user-tie me-2"></i> Identitas Kepsek</a></li>
-                <li class="nav-item"><a href="#bobot" class="nav-link text-white"><i class="fas fa-balance-scale me-2"></i> Bobot Nilai</a></li>
                 <li class="nav-item"><a href="#murid" class="nav-link text-white"><i class="fas fa-users me-2"></i> Data Murid</a></li>
                 <li class="nav-item"><a href="#cetak" class="nav-link text-white"><i class="fas fa-print me-2"></i> Menu Cetak F4</a></li>
-                <li class="nav-item"><a href="#backup" class="nav-link text-white"><i class="fas fa-database me-2"></i> Backup & Restore</a></li>
+                <li class="nav-item"><a href="#" onclick="location.reload()" class="nav-link text-white"><i class="fas fa-sync me-2"></i> Refresh App</a></li>
             </ul>
         </nav>
 
         <main class="col-md-10 ms-sm-auto px-md-4 py-4" style="margin-left: 16.6%;">
             
-            <section id="sekolah" class="card card-custom p-4 mb-4">
-                <h5 class="fw-bold mb-3" style="color: var(--merah-candy);">🏢 Identitas Sekolah</h5>
-                <div class="row g-3">
-                    <div class="col-md-6"><label>Nama Sekolah</label><input type="text" class="form-control" placeholder="SDN MUARA BAKTI 01"></div>
-                    <div class="col-md-3"><label>NPSN</label><input type="text" class="form-control"></div>
-                    <div class="col-md-3"><label>Status</label><select class="form-select"><option>Negeri</option><option>Swasta</option></select></div>
-                    <div class="col-md-4"><label>Kecamatan</label><input type="text" class="form-control"></div>
-                    <div class="col-md-4"><label>Kabupaten</label><input type="text" class="form-control" value="Bekasi"></div>
-                    <div class="col-md-4"><label>Provinsi</label><input type="text" class="form-control" value="Jawa Barat"></div>
+            <section id="sekolah">
+                <div class="card card-custom p-4 mb-4 shadow-sm">
+                    <h5 class="fw-bold mb-3" style="color: var(--merah-candy);"><i class="fas fa-school"></i> Identitas Sekolah</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">Nama Sekolah</label><input type="text" id="sk-nama" class="form-control" placeholder="SDN MUARA BAKTI 01"></div>
+                        <div class="col-md-6"><label class="form-label">NPSN</label><input type="text" id="sk-npsn" class="form-control"></div>
+                        <div class="col-md-12"><label class="form-label">Alamat</label><input type="text" id="sk-alamat" class="form-control"></div>
+                    </div>
+                    <button class="btn btn-danger mt-3 w-25">SIMPAN</button>
                 </div>
-                <button class="btn btn-simpan mt-3 w-25">SIMPAN</button>
             </section>
 
-            <section id="murid" class="card card-custom p-4 mb-4">
-                <div class="d-flex justify-content-between">
-                    <h5 class="fw-bold" style="color: var(--merah-candy);">👥 Data Murid & Import CSV</h5>
-                    <input type="file" id="csvFile" class="d-none">
-                    <button onclick="document.getElementById('csvFile').click()" class="btn btn-sm btn-dark">Import CSV</button>
+            <section id="kepsek">
+                <div class="card card-custom p-4 mb-4 shadow-sm">
+                    <h5 class="fw-bold mb-3" style="color: var(--merah-candy);"><i class="fas fa-user-tie"></i> Identitas Kepala Sekolah</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">Nama Kepala Sekolah</label><input type="text" id="ks-nama" class="form-control"></div>
+                        <div class="col-md-6"><label class="form-label">NIP</label><input type="text" id="ks-nip" class="form-control"></div>
+                    </div>
+                    <button class="btn btn-danger mt-3 w-25">SIMPAN</button>
                 </div>
-                <div class="alert alert-info mt-3 p-2">
-                    <label class="small fw-bold">Pilih Siswa untuk Validasi/Cetak:</label>
-                    <select class="form-select"><option>-- Cari Nama Anak --</option></select>
-                </div>
-                <div class="row g-2">
-                    <div class="col-md-4"><label>NISN</label><input type="text" class="form-control"></div>
-                    <div class="col-md-8"><label>Nama Lengkap Murid</label><input type="text" class="form-control"></div>
-                </div>
-                <button class="btn btn-simpan mt-3 w-25">SIMPAN DATA MURID</button>
             </section>
 
-            <section id="cetak" class="card card-custom p-4 mb-4">
-                <h5 class="fw-bold" style="color: var(--merah-candy);">🖨️ Menu Cetak Dokumen (F4)</h5>
-                <div class="row g-3 mt-2">
-                    <div class="col-md-4"><a href="templates/kelulusan.html" target="_blank" class="btn btn-outline-danger w-100">Surat Kelulusan</a></div>
-                    <div class="col-md-4"><a href="templates/skkb.html" target="_blank" class="btn btn-outline-danger w-100">Surat Kelakuan Baik</a></div>
-                    <div class="col-md-4"><a href="templates/surat_nisn.html" target="_blank" class="btn btn-outline-danger w-100">Keterangan NISN</a></div>
-                    <div class="col-md-4"><a href="templates/transkrip_nilai.html" target="_blank" class="btn btn-outline-danger w-100">Transkrip Nilai</a></div>
-                    <div class="col-md-4"><button class="btn btn-outline-danger w-100">Serah Terima Ijazah</button></div>
-                    <div class="col-md-4"><button class="btn btn-outline-danger w-100">Cover Kelas</button></div>
+            <section id="murid">
+                <div class="card card-custom p-4 mb-4 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold m-0" style="color: var(--merah-candy);"><i class="fas fa-users"></i> Data Murid & Import CSV</h5>
+                        <div>
+                            <input type="file" id="csvFileInput" accept=".csv" onchange="importCSV(event)" class="d-none">
+                            <button onclick="document.getElementById('csvFileInput').click()" class="btn btn-dark btn-sm">
+                                <i class="fas fa-file-import me-1"></i> Import CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-light p-3 rounded border mb-4">
+                        <label class="small fw-bold mb-2">Pilih Siswa untuk Validasi / Cetak:</label>
+                        <select id="select-murid" class="form-select border-primary">
+                            <option value="">-- Cari Nama Anak --</option>
+                        </select>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-4"><label class="form-label">Nomor Peserta</label><input type="text" id="input-nopes" class="form-control" readonly></div>
+                        <div class="col-md-4"><label class="form-label">NISN</label><input type="text" id="input-nisn" class="form-control" readonly></div>
+                        <div class="col-md-4"><label class="form-label">NIS</label><input type="text" id="input-nis" class="form-control" readonly></div>
+                        <div class="col-md-8"><label class="form-label">Nama Lengkap Murid</label><input type="text" id="input-nama" class="form-control" readonly></div>
+                        <div class="col-md-4"><label class="form-label">Jenis Kelamin</label><input type="text" id="input-jk" class="form-control" readonly></div>
+                        <div class="col-md-4"><label class="form-label">Tempat Lahir</label><input type="text" id="input-tmp" class="form-control" readonly></div>
+                        <div class="col-md-4"><label class="form-label">Tanggal Lahir</label><input type="text" id="input-tgl" class="form-control" readonly></div>
+                        <div class="col-md-4"><label class="form-label">Nama Ortu</label><input type="text" id="input-ortu" class="form-control" readonly></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="cetak">
+                <div class="card card-custom p-4 mb-4 shadow-sm">
+                    <h5 class="fw-bold mb-3" style="color: var(--merah-candy);"><i class="fas fa-print"></i> Menu Cetak Dokumen (F4)</h5>
+                    <div class="row g-3">
+                        <div class="col-md-4"><a href="templates/kelulusan.html" target="_blank" class="btn btn-outline-danger w-100 py-3">Surat Kelulusan</a></div>
+                        <div class="col-md-4"><a href="templates/skkb.html" target="_blank" class="btn btn-outline-danger w-100 py-3">Surat Kelakuan Baik</a></div>
+                        <div class="col-md-4"><a href="templates/surat_nisn.html" target="_blank" class="btn btn-outline-danger w-100 py-3">Keterangan NISN</a></div>
+                        <div class="col-md-4"><a href="templates/transkrip_nilai.html" target="_blank" class="btn btn-outline-danger w-100 py-3">Transkrip Nilai</a></div>
+                    </div>
                 </div>
             </section>
 
