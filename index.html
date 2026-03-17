@@ -3,137 +3,783 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIAKAD Sekolah - Bekasi</title>
+    <title>SIAKAD PRO - Bekasi Candy Edition</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QR Code Library untuk Barcode NISN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        html { scroll-behavior: smooth; }
-        .sidebar { height: 100vh; background: var(--merah-candy); position: fixed; z-index: 1000; }
-        .main-content { margin-left: 16.666667%; padding: 20px; }
-        section { padding-top: 20px; margin-bottom: 40px; }
-        .form-label { font-weight: bold; font-size: 0.9rem; margin-bottom: 2px; }
-        .card-custom { border-radius: 15px; border: none; }
-        .btn-simpan { background-color: var(--merah-candy); color: white; font-weight: bold; border-radius: 8px; }
-        .btn-simpan:hover { background-color: #a00000; color: white; }
+        :root { 
+            --candy-red: #D21F3C; 
+            --candy-red-dark: #8B0000; 
+            --candy-red-soft: #FFF5F5;
+            --sidebar-width: 280px;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+        }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #FFF0F0; 
+            color: #2d3436;
+            overflow: hidden; 
+            margin: 0;
+        }
+
+        /* Sidebar Styling - Candy Red Gradient */
+        .sidebar { 
+            height: 100vh; 
+            background: linear-gradient(180deg, var(--candy-red) 0%, var(--candy-red-dark) 100%);
+            position: fixed; 
+            width: var(--sidebar-width); 
+            z-index: 1000;
+            border-right: 4px solid rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-logo {
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+            max-width: 80px;
+            margin-bottom: 15px;
+        }
+
+        .nav-link { 
+            color: rgba(255,255,255,0.85); 
+            margin: 5px 15px; 
+            padding: 12px 15px;
+            border-radius: 12px; 
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .nav-link i { width: 25px; margin-right: 10px; }
+
+        .nav-link:hover { background: rgba(255,255,255,0.15); color: white; }
+
+        .nav-link.active { 
+            background: white; 
+            color: var(--candy-red); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-weight: 700;
+        }
+
+        /* Main Content */
+        .main-content { 
+            margin-left: var(--sidebar-width); 
+            height: 100vh; 
+            overflow-y: auto; 
+            padding: 30px 40px; 
+        }
+
+        .card-custom { 
+            border-radius: 20px; 
+            border: none;
+            box-shadow: 0 10px 30px rgba(210, 31, 60, 0.1); 
+            background: white;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .section-header {
+            border-left: 5px solid var(--candy-red);
+            padding-left: 15px;
+            margin-bottom: 25px;
+        }
+
+        .form-section { display: none; }
+        .form-section.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        .form-control:focus { border-color: var(--candy-red); box-shadow: 0 0 0 0.25rem rgba(210, 31, 60, 0.1); }
+
+        .btn-candy {
+            background: var(--candy-red);
+            color: white;
+            border-radius: 10px;
+            padding: 10px 25px;
+            border: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-candy:hover { background: var(--candy-red-dark); color: white; transform: translateY(-2px); }
+
+        .table-candy thead {
+            background-color: var(--candy-red);
+            color: white;
+        }
+
+        .print-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .print-item {
+            background: white;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .print-item:hover { border-color: var(--candy-red); transform: scale(1.03); background: var(--candy-red-soft); }
+
+        /* Print Settings for F4 */
+        @media print {
+            @page { size: 210mm 330mm; margin: 15mm; }
+            body { background: white; padding: 0; }
+            .no-print { display: none !important; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container-fluid">
-    <div class="row">
-        <nav class="col-md-2 d-none d-md-block sidebar shadow-lg">
-            <div class="text-center mb-4">
-                <img src="assets/img/logo-bekasi.png" width="80" alt="Logo Bekasi" class="mt-4 shadow-sm rounded-circle p-2 bg-white">
-                <h6 class="mt-2 fw-bold text-white">SIAKAD BEKASI</h6>
-                <small class="text-white-50">Sistem Informasi Akademik</small>
-            </div>
-            <ul class="nav flex-column">
-                <li class="nav-item"><a href="#sekolah" class="nav-link text-white"><i class="fas fa-school me-2"></i> Identitas Sekolah</a></li>
-                <li class="nav-item"><a href="#kepsek" class="nav-link text-white"><i class="fas fa-user-tie me-2"></i> Identitas Kepsek & Surat</a></li>
-                <li class="nav-item"><a href="#murid" class="nav-link text-white"><i class="fas fa-users me-2"></i> Data Murid & Import</a></li>
-                <li class="nav-item"><a href="#cetak" class="nav-link text-white"><i class="fas fa-print me-2"></i> Menu Cetak F4</a></li>
-            </ul>
-        </nav>
-
-        <main class="col-md-10 main-content">
-            
-            <section id="sekolah">
-                <div class="card card-custom p-4 shadow-sm">
-                    <h5 class="fw-bold mb-4" style="color: var(--merah-candy); border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                        <i class="fas fa-university me-2"></i> Identitas Sekolah (Untuk KOP Surat)
-                    </h5>
-                    <div class="row g-3">
-                        <div class="col-md-6"><label class="form-label">Nama Sekolah</label><input type="text" id="sk-nama" class="form-control" placeholder="SDN MUARA BAKTI 01"></div>
-                        <div class="col-md-3"><label class="form-label">NPSN</label><input type="text" id="sk-npsn" class="form-control"></div>
-                        <div class="col-md-3"><label class="form-label">Status</label><select id="sk-status" class="form-select"><option>Negeri</option><option>Swasta</option></select></div>
-                        <div class="col-md-12"><label class="form-label">Alamat Lengkap</label><input type="text" id="sk-alamat" class="form-control"></div>
-                        <div class="col-md-4"><label class="form-label">Desa/Kelurahan</label><input type="text" id="sk-desa" class="form-control"></div>
-                        <div class="col-md-4"><label class="form-label">Kecamatan</label><input type="text" id="sk-kec" class="form-control"></div>
-                        <div class="col-md-4"><label class="form-label">Kabupaten/Kota</label><input type="text" id="sk-kab" class="form-control" value="Bekasi"></div>
-                        <div class="col-md-3"><label class="form-label">Kode Pos</label><input type="text" id="sk-pos" class="form-control"></div>
-                        <div class="col-md-4"><label class="form-label">Provinsi</label><input type="text" id="sk-prov" class="form-control" value="Jawa Barat"></div>
-                        <div class="col-md-5"><label class="form-label">Email Sekolah</label><input type="email" id="sk-email" class="form-control"></div>
-                        <div class="col-md-6"><label class="form-label">Kurikulum</label><select id="sk-kurikulum" class="form-select"><option>Kurikulum Merdeka</option><option>Kurikulum 2013</option></select></div>
-                        <div class="col-md-6"><label class="form-label">Tahun Pelajaran</label><input type="text" id="sk-tp" class="form-control" placeholder="2024/2025"></div>
-                    </div>
-                    <button class="btn btn-simpan mt-4 w-25 shadow-sm" onclick="saveData('sekolah')">SIMPAN IDENTITAS SEKOLAH</button>
-                </div>
-            </section>
-
-            <section id="kepsek">
-                <div class="card card-custom p-4 shadow-sm">
-                    <h5 class="fw-bold mb-4" style="color: var(--merah-candy); border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                        <i class="fas fa-pen-nib me-2"></i> Identitas Kepsek, Mapel Mulok & Surat
-                    </h5>
-                    <div class="row g-3">
-                        <div class="col-md-6"><label class="form-label">Nama Kepala Sekolah</label><input type="text" id="ks-nama" class="form-control" placeholder="ROHIMAH, S.Pd"></div>
-                        <div class="col-md-6"><label class="form-label">NIP</label><input type="text" id="ks-nip" class="form-control"></div>
-                        
-                        <div class="col-12 mt-3 fw-bold text-muted small"><i class="fas fa-book me-1"></i> Mapel Muatan Lokal</div>
-                        <div class="col-md-4"><label class="form-label">Mulok 1</label><input type="text" id="mulok-1" class="form-control" value="Bahasa Sunda"></div>
-                        <div class="col-md-4"><label class="form-label">Mulok 2</label><input type="text" id="mulok-2" class="form-control" value="Bahasa Inggris"></div>
-                        <div class="col-md-4"><label class="form-label">Mulok 3</label><input type="text" id="mulok-3" class="form-control" value="Komputer"></div>
-                        
-                        <div class="col-12 mt-3 fw-bold text-muted small"><i class="fas fa-file-alt me-1"></i> Pengaturan Penomoran Surat</div>
-                        <div class="col-md-8"><label class="form-label">Nomor Surat (Template)</label><input type="text" id="surat-no" class="form-control" placeholder="400.3.12.1/040/SD.37/VI/2025"></div>
-                        <div class="col-md-4"><label class="form-label">Tanggal Surat</label><input type="date" id="surat-tgl" class="form-control"></div>
-                        <div class="col-md-12"><label class="form-label">Nama Kota Penandatanganan</label><input type="text" id="surat-kota" class="form-control" value="Bekasi"></div>
-                    </div>
-                    <button class="btn btn-simpan mt-4 w-25 shadow-sm" onclick="saveData('kepsek')">SIMPAN DATA KEPSEK & SURAT</button>
-                </div>
-            </section>
-
-            <section id="murid">
-                <div class="card card-custom p-4 shadow-sm">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold m-0" style="color: var(--merah-candy);"><i class="fas fa-users"></i> Data Murid & Import CSV</h5>
-                        <div>
-                            <input type="file" id="csvFileInput" accept=".csv" onchange="importCSV(event)" class="d-none">
-                            <button onclick="document.getElementById('csvFileInput').click()" class="btn btn-dark btn-sm shadow-sm">
-                                <i class="fas fa-file-import me-1"></i> Import CSV Murid
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="bg-light p-3 rounded border mb-4">
-                        <label class="small fw-bold mb-2">Pilih Siswa untuk Validasi / Cetak:</label>
-                        <select id="select-murid" class="form-select border-primary shadow-sm">
-                            <option value="">-- Cari Nama Anak --</option>
-                        </select>
-                    </div>
-
-                    <div class="row g-3">
-                        <div class="col-md-4"><label class="form-label">NISN</label><input type="text" id="input-nisn" class="form-control bg-white" readonly></div>
-                        <div class="col-md-8"><label class="form-label">Nama Lengkap Murid</label><input type="text" id="input-nama" class="form-control bg-white" readonly></div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="cetak">
-                <div class="card card-custom p-4 shadow-sm border-start border-danger border-5">
-                    <h5 class="fw-bold mb-3" style="color: var(--merah-candy);"><i class="fas fa-print"></i> Menu Cetak Dokumen (Format F4)</h5>
-                    <p class="small text-muted mb-4">Pastikan data sekolah dan murid sudah disimpan sebelum mencetak.</p>
-                    <div class="row g-3 text-center">
-                        <div class="col-md-4"><a href="templates/kelulusan.html" target="_blank" class="btn btn-outline-danger w-100 py-3 fw-bold"><i class="fas fa-graduation-cap d-block mb-2 fa-2x"></i> Kelulusan</a></div>
-                        <div class="col-md-4"><a href="templates/skkb.html" target="_blank" class="btn btn-outline-danger w-100 py-3 fw-bold"><i class="fas fa-user-shield d-block mb-2 fa-2x"></i> SKKB</a></div>
-                        <div class="col-md-4"><a href="templates/surat_nisn.html" target="_blank" class="btn btn-outline-danger w-100 py-3 fw-bold"><i class="fas fa-id-card d-block mb-2 fa-2x"></i> Ket. NISN</a></div>
-                        <div class="col-md-4"><a href="templates/transkrip_nilai.html" target="_blank" class="btn btn-outline-danger w-100 py-3 fw-bold"><i class="fas fa-list-ol d-block mb-2 fa-2x"></i> Transkrip Nilai</a></div>
-                    </div>
-                </div>
-            </section>
-
-        </main>
+<!-- SIDEBAR -->
+<div class="sidebar text-white no-print">
+    <div class="sidebar-header">
+        <img src="https://freeimghost.com/images/2026/01/22/Kabupaten-Bekasi.md.png" class="sidebar-logo">
+        <h6 class="fw-bold mb-0">SIAKAD BEKASI PRO</h6>
+        <p class="small opacity-75">v2.5 - Candy Edition</p>
     </div>
+    
+    <nav class="mt-3">
+        <a href="#" class="nav-link active" data-target="sec_sekolah"><i class="fas fa-school"></i> Identitas Sekolah</a>
+        <a href="#" class="nav-link" data-target="sec_kepsek"><i class="fas fa-user-tie"></i> Identitas Kepala</a>
+        <a href="#" class="nav-link" data-target="sec_bobot"><i class="fas fa-percentage"></i> Bobot Nilai</a>
+        <a href="#" class="nav-link" data-target="sec_murid"><i class="fas fa-users"></i> Data Murid</a>
+        <a href="#" class="nav-link" data-target="sec_nilai"><i class="fas fa-edit"></i> Input Nilai (S7-12)</a>
+        <a href="#" class="nav-link" data-target="sec_cetak"><i class="fas fa-print"></i> Menu Cetak</a>
+        <a href="#" class="nav-link" data-target="sec_redaksi"><i class="fas fa-file-alt"></i> Redaksi Surat</a>
+        <hr class="mx-3 opacity-25">
+        <a href="#" class="nav-link" onclick="backupData()"><i class="fas fa-download"></i> Backup Data</a>
+        <a href="#" class="nav-link" onclick="document.getElementById('restoreFile').click()"><i class="fas fa-upload"></i> Restore Data</a>
+        <input type="file" id="restoreFile" class="d-none" onchange="restoreData(event)">
+    </nav>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/app.js"></script>
+<!-- MAIN CONTENT -->
+<main class="main-content">
+    
+    <!-- TOP BAR -->
+    <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+        <h4 class="fw-bold text-dark" id="viewTitle">Identitas Sekolah</h4>
+        <div class="d-flex align-items-center bg-white p-2 px-3 rounded-pill shadow-sm">
+            <i class="fas fa-user-circle text-danger me-2"></i>
+            <select id="globalSiswaSelector" class="form-select form-select-sm border-0" style="width: 200px;" onchange="syncGlobalSiswa(this.value)">
+                <option value="">Pilih Siswa...</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- SECTION 1: IDENTITAS SEKOLAH -->
+    <section id="sec_sekolah" class="form-section active">
+        <div class="card card-custom">
+            <div class="section-header"><h5>Informasi Profil Sekolah</h5></div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="small fw-bold">Nama Sekolah</label>
+                    <input type="text" id="sk_nama" class="form-control store" placeholder="SDN MUARA BAKTI 01">
+                </div>
+                <div class="col-md-3">
+                    <label class="small fw-bold">NPSN</label>
+                    <input type="text" id="sk_npsn" class="form-control store">
+                </div>
+                <div class="col-md-3">
+                    <label class="small fw-bold">Status</label>
+                    <select id="sk_status" class="form-select store">
+                        <option>Negeri</option>
+                        <option>Swasta</option>
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <label class="small fw-bold">Alamat Lengkap</label>
+                    <input type="text" id="sk_alamat" class="form-control store">
+                </div>
+                <div class="col-md-3">
+                    <label class="small fw-bold">Desa/Kelurahan</label>
+                    <input type="text" id="sk_desa" class="form-control store">
+                </div>
+                <div class="col-md-3">
+                    <label class="small fw-bold">Kecamatan</label>
+                    <input type="text" id="sk_kec" class="form-control store">
+                </div>
+                <div class="col-md-3">
+                    <label class="small fw-bold">Kabupaten/Kota</label>
+                    <input type="text" id="sk_kab" class="form-control store" value="Bekasi">
+                </div>
+                <div class="col-md-3">
+                    <label class="small fw-bold">Kode Pos</label>
+                    <input type="text" id="sk_kodepos" class="form-control store">
+                </div>
+                <div class="col-md-4">
+                    <label class="small fw-bold">Provinsi</label>
+                    <input type="text" id="sk_prov" class="form-control store" value="Jawa Barat">
+                </div>
+                <div class="col-md-4">
+                    <label class="small fw-bold">Email Sekolah</label>
+                    <input type="email" id="sk_email" class="form-control store">
+                </div>
+                <div class="col-md-4">
+                    <label class="small fw-bold">Kurikulum</label>
+                    <select id="sk_kurikulum" class="form-select store">
+                        <option>Kurikulum Merdeka</option>
+                        <option>Kurikulum 2013 (K13)</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="small fw-bold">Tahun Pelajaran</label>
+                    <input type="text" id="sk_tp" class="form-control store" value="2024/2025">
+                </div>
+            </div>
+            <div class="mt-4 text-end">
+                <button class="btn btn-candy" onclick="saveData()"><i class="fas fa-save me-2"></i>SIMPAN IDENTITAS</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: IDENTITAS KEPALA SEKOLAH -->
+    <section id="sec_kepsek" class="form-section">
+        <div class="card card-custom">
+            <div class="section-header"><h5>Informasi Kepala Sekolah & Penomoran</h5></div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="small fw-bold">Nama Kepala Sekolah</label>
+                    <input type="text" id="ks_nama" class="form-control store" placeholder="ROHIMAH, S.Pd">
+                </div>
+                <div class="col-md-6">
+                    <label class="small fw-bold">NIP</label>
+                    <input type="text" id="ks_nip" class="form-control store">
+                </div>
+                <div class="col-md-4">
+                    <label class="small fw-bold">Mapel Mulok 1</label>
+                    <input type="text" id="ks_mulok1" class="form-control store" value="Bahasa Sunda">
+                </div>
+                <div class="col-md-4">
+                    <label class="small fw-bold">Mapel Mulok 2</label>
+                    <input type="text" id="ks_mulok2" class="form-control store" value="Bahasa Inggris">
+                </div>
+                <div class="col-md-4">
+                    <label class="small fw-bold">Mapel Mulok 3</label>
+                    <input type="text" id="ks_mulok3" class="form-control store" value="Komputer">
+                </div>
+                <div class="col-md-6">
+                    <label class="small fw-bold">Nomor Surat Sekolah</label>
+                    <input type="text" id="ks_nosurat" class="form-control store" placeholder="400.3.12.1/041/SD.37/VI/2025">
+                </div>
+                <div class="col-md-3">
+                    <label class="small fw-bold">Kota Penerbitan</label>
+                    <input type="text" id="ks_kota" class="form-control store" value="Bekasi">
+                </div>
+                <div class="col-md-3">
+                    <label class="small fw-bold">Tanggal Surat</label>
+                    <input type="date" id="ks_tglsurat" class="form-control store">
+                </div>
+            </div>
+            <div class="mt-4 text-end">
+                <button class="btn btn-candy" onclick="saveData()"><i class="fas fa-save me-2"></i>SIMPAN DATA KEPSEK</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: BOBOT NILAI -->
+    <section id="sec_bobot" class="form-section">
+        <div class="card card-custom">
+            <div class="section-header"><h5>Konfigurasi Bobot Nilai Akhir</h5></div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="small fw-bold">Bobot Nilai Raport (%)</label>
+                    <input type="number" id="b_raport" class="form-control store" value="60">
+                </div>
+                <div class="col-md-3">
+                    <label class="small fw-bold">Bobot Ujian Sekolah (%)</label>
+                    <input type="number" id="b_us" class="form-control store" value="40">
+                </div>
+                <div class="col-md-3">
+                    <label class="small fw-bold">Bobot Pengetahuan KI3 (%)</label>
+                    <input type="number" id="b_ki3" class="form-control store" value="50">
+                </div>
+                <div class="col-md-3">
+                    <label class="small fw-bold">Bobot Keterampilan KI4 (%)</label>
+                    <input type="number" id="b_ki4" class="form-control store" value="50">
+                </div>
+            </div>
+            <div class="alert alert-info mt-3 small">
+                <i class="fas fa-info-circle me-2"></i>Pastikan total persentase berpasangan berjumlah 100%. Rumus akan otomatis menghitung hasil akhir secara akurat.
+            </div>
+            <div class="mt-4 text-end">
+                <button class="btn btn-candy" onclick="saveData()"><i class="fas fa-save me-2"></i>SIMPAN BOBOT</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: DATA MURID -->
+    <section id="sec_murid" class="form-section">
+        <div class="card card-custom">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="section-header mb-0"><h5>Database Murid</h5></div>
+                <div>
+                    <button class="btn btn-dark btn-sm me-2" onclick="document.getElementById('csvImport').click()">
+                        <i class="fas fa-file-csv me-1"></i> Import CSV
+                    </button>
+                    <input type="file" id="csvImport" class="d-none" accept=".csv" onchange="processCSV(event)">
+                    <button class="btn btn-success btn-sm" onclick="addNewStudent()">
+                        <i class="fas fa-plus me-1"></i> Tambah Manual
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover table-candy align-middle" style="font-size: 0.85rem;">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Lengkap</th>
+                            <th>NISN</th>
+                            <th>L/P</th>
+                            <th>Ortu (Ijazah)</th>
+                            <th>No Seri Ijazah</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <!-- Data loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-3 text-end">
+                <button class="btn btn-candy" onclick="saveStudentChanges()"><i class="fas fa-save me-2"></i>SIMPAN PERUBAHAN DATA</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: INPUT NILAI -->
+    <section id="sec_nilai" class="form-section">
+        <div class="card card-custom">
+            <div class="section-header"><h5>Input Nilai Akademik</h5></div>
+            <div id="nilaiEditorContainer" class="p-4 text-center border rounded-4 bg-light">
+                <i class="fas fa-user-graduate fa-3x text-muted mb-3"></i>
+                <p>Silakan pilih siswa pada bagian atas layar terlebih dahulu untuk menginput nilai.</p>
+            </div>
+            
+            <div id="nilaiForm" style="display:none;">
+                <h5 class="fw-bold mb-3 text-danger" id="namaSiswaNilai">Nama Siswa</h5>
+                <div class="row g-3">
+                    <!-- Raport Semesters -->
+                    <div class="col-md-2">
+                        <label class="small fw-bold">Raport S7</label>
+                        <input type="number" id="n_s7" class="form-control n-input">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold">Raport S8</label>
+                        <input type="number" id="n_s8" class="form-control n-input">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold">Raport S9</label>
+                        <input type="number" id="n_s9" class="form-control n-input">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold">Raport S10</label>
+                        <input type="number" id="n_s10" class="form-control n-input">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold">Raport S11</label>
+                        <input type="number" id="n_s11" class="form-control n-input">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold">Raport S12</label>
+                        <input type="number" id="n_s12" class="form-control n-input">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="small fw-bold">Rata-rata Raport (60%)</label>
+                        <input type="text" id="avg_raport" class="form-control bg-light" readonly>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="small fw-bold">Nilai Ujian Sekolah (40%)</label>
+                        <input type="number" id="n_us" class="form-control n-input">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="small fw-bold">NILAI AKHIR AKURAT</label>
+                        <input type="text" id="n_akhir" class="form-control fw-bold text-danger bg-light" readonly>
+                    </div>
+                </div>
+                <div class="mt-4 text-end">
+                    <button class="btn btn-candy" onclick="saveStudentNilai()"><i class="fas fa-save me-2"></i>SIMPAN NILAI</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: MENU CETAK -->
+    <section id="sec_cetak" class="form-section">
+        <div class="card card-custom">
+            <div class="section-header"><h5>Generator Dokumen (F4)</h5></div>
+            <div class="print-grid">
+                <div class="print-item" onclick="preparePrint('lulus')">
+                    <i class="fas fa-graduation-cap fa-2x text-danger mb-2"></i><br>Surat Kelulusan
+                </div>
+                <div class="print-item" onclick="preparePrint('skkb')">
+                    <i class="fas fa-user-check fa-2x text-danger mb-2"></i><br>Surat Kelakuan Baik
+                </div>
+                <div class="print-item" onclick="preparePrint('ijazah')">
+                    <i class="fas fa-hand-holding fa-2x text-danger mb-2"></i><br>Serah Terima Ijazah
+                </div>
+                <div class="print-item" onclick="preparePrint('nisn')">
+                    <i class="fas fa-id-card fa-2x text-danger mb-2"></i><br>Keterangan NISN
+                </div>
+                <div class="print-item" onclick="preparePrint('cover')">
+                    <i class="fas fa-book-open fa-2x text-danger mb-2"></i><br>Cover Cantik
+                </div>
+                <div class="print-item" onclick="preparePrint('laporan')">
+                    <i class="fas fa-chart-bar fa-2x text-danger mb-2"></i><br>Laporan Kelulusan
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7: REDAKSI -->
+    <section id="sec_redaksi" class="form-section">
+        <div class="card card-custom">
+            <div class="section-header"><h5>Pengaturan Redaksi Surat</h5></div>
+            <div class="mb-3">
+                <label class="small fw-bold">Redaksi Surat Kelulusan</label>
+                <textarea id="red_lulus" class="form-control store" rows="3">Berdasarkan hasil kriteria kelulusan satuan pendidikan, maka nama tersebut di atas dinyatakan LULUS.</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="small fw-bold">Redaksi Kelakuan Baik</label>
+                <textarea id="red_skkb" class="form-control store" rows="3">Selama menjadi siswa di sekolah kami, yang bersangkutan berkelakuan baik dan tidak pernah terlibat kasus kriminal.</textarea>
+            </div>
+            <div class="mt-4 text-end">
+                <button class="btn btn-candy" onclick="saveData()"><i class="fas fa-save me-2"></i>SIMPAN REDAKSI</button>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- Hidden QR Container for Printing -->
+<div id="qrcode" style="display:none"></div>
+
 <script>
-    // Fungsi sederhana untuk simulasi simpan data
-    function saveData(type) {
-        alert("Data " + type + " Berhasil Disimpan ke Local Storage!");
+    // --- DATA STATE ---
+    let DB_MURID = JSON.parse(localStorage.getItem('siakad_db_murid')) || [];
+    let APP_CONFIG = JSON.parse(localStorage.getItem('siakad_config')) || {};
+    let SISWA_TERPILIH_ID = null;
+
+    // --- NAVIGATION ---
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            if(this.dataset.target) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(this.dataset.target).classList.add('active');
+                document.getElementById('viewTitle').innerText = this.innerText.trim();
+            }
+        });
+    });
+
+    // --- IDENTITAS & CONFIG ---
+    function saveData() {
+        const stores = document.querySelectorAll('.store');
+        stores.forEach(el => APP_CONFIG[el.id] = el.value);
+        localStorage.setItem('siakad_config', JSON.stringify(APP_CONFIG));
+        alert('Data Berhasil Disimpan!');
     }
+
+    // --- DATA MURID ---
+    function processCSV(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const rows = evt.target.result.split('\n').slice(1);
+            rows.forEach(row => {
+                const c = row.split(',');
+                if(c.length > 3) {
+                    DB_MURID.push({
+                        id: Date.now() + Math.random(),
+                        nopes: (c[0] || '').trim(),
+                        nisn: (c[1] || '').trim(),
+                        nis: (c[2] || '').trim(),
+                        nama: (c[3] || '').trim(),
+                        jk: (c[4] || '').trim(),
+                        tmp_lahir: (c[5] || '').trim(),
+                        tgl_lahir: (c[6] || '').trim(),
+                        ayah: (c[7] || '').trim(),
+                        ibu: (c[8] || '').trim(),
+                        alamat: (c[9] || '').trim(),
+                        no_ijazah: (c[10] || '').trim(),
+                        ortu_ijazah: (c[11] || '').trim(),
+                        nilai: {}
+                    });
+                }
+            });
+            saveToLocal();
+            renderStudents();
+            renderGlobalSelector();
+        };
+        reader.readAsText(file);
+    }
+
+    function renderStudents() {
+        const tbody = document.getElementById('studentTableBody');
+        tbody.innerHTML = '';
+        DB_MURID.forEach((s, idx) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td><input type="text" class="form-control form-control-sm" value="${s.nama}" onchange="updateStudentField(${s.id}, 'nama', this.value)"></td>
+                    <td><input type="text" class="form-control form-control-sm" value="${s.nisn}" onchange="updateStudentField(${s.id}, 'nisn', this.value)"></td>
+                    <td width="80">
+                        <select class="form-select form-select-sm" onchange="updateStudentField(${s.id}, 'jk', this.value)">
+                            <option value="L" ${s.jk==='L'?'selected':''}>L</option>
+                            <option value="P" ${s.jk==='P'?'selected':''}>P</option>
+                        </select>
+                    </td>
+                    <td><input type="text" class="form-control form-control-sm" value="${s.ortu_ijazah || ''}" onchange="updateStudentField(${s.id}, 'ortu_ijazah', this.value)"></td>
+                    <td><input type="text" class="form-control form-control-sm" value="${s.no_ijazah || ''}" onchange="updateStudentField(${s.id}, 'no_ijazah', this.value)"></td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" onclick="deleteStudent(${s.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function updateStudentField(id, field, val) {
+        const s = DB_MURID.find(x => x.id == id);
+        if(s) s[field] = val;
+    }
+
+    function saveStudentChanges() {
+        saveToLocal();
+        renderGlobalSelector();
+        alert('Perubahan data murid disimpan!');
+    }
+
+    function deleteStudent(id) {
+        if(confirm('Hapus siswa ini?')) {
+            DB_MURID = DB_MURID.filter(x => x.id != id);
+            saveToLocal();
+            renderStudents();
+            renderGlobalSelector();
+        }
+    }
+
+    // --- NILAI AKADEMIK ---
+    function renderGlobalSelector() {
+        const sel = document.getElementById('globalSiswaSelector');
+        sel.innerHTML = '<option value="">Pilih Siswa...</option>';
+        DB_MURID.forEach(s => {
+            sel.innerHTML += `<option value="${s.id}">${s.nama}</option>`;
+        });
+    }
+
+    function syncGlobalSiswa(id) {
+        SISWA_TERPILIH_ID = id;
+        if(!id) {
+            document.getElementById('nilaiEditorContainer').style.display = 'block';
+            document.getElementById('nilaiForm').style.display = 'none';
+            return;
+        }
+        
+        const s = DB_MURID.find(x => x.id == id);
+        document.getElementById('nilaiEditorContainer').style.display = 'none';
+        document.getElementById('nilaiForm').style.display = 'block';
+        document.getElementById('namaSiswaNilai').innerText = s.nama;
+        
+        // Fill Values
+        const fields = ['n_s7','n_s8','n_s9','n_s10','n_s11','n_s12','n_us'];
+        fields.forEach(f => {
+            document.getElementById(f).value = s.nilai?.[f] || 0;
+        });
+        calculateNilai();
+    }
+
+    function calculateNilai() {
+        const s7 = parseFloat(document.getElementById('n_s7').value) || 0;
+        const s8 = parseFloat(document.getElementById('n_s8').value) || 0;
+        const s9 = parseFloat(document.getElementById('n_s9').value) || 0;
+        const s10 = parseFloat(document.getElementById('n_s10').value) || 0;
+        const s11 = parseFloat(document.getElementById('n_s11').value) || 0;
+        const s12 = parseFloat(document.getElementById('n_s12').value) || 0;
+        const n_us = parseFloat(document.getElementById('n_us').value) || 0;
+
+        const b_rap = (parseFloat(APP_CONFIG.b_raport) || 60) / 100;
+        const b_us = (parseFloat(APP_CONFIG.b_us) || 40) / 100;
+
+        const avg_r = (s7 + s8 + s9 + s10 + s11 + s12) / 6;
+        const n_akhir = (avg_r * b_rap) + (n_us * b_us);
+
+        document.getElementById('avg_raport').value = avg_r.toFixed(2);
+        document.getElementById('n_akhir').value = n_akhir.toFixed(2);
+    }
+
+    document.querySelectorAll('.n-input').forEach(i => i.addEventListener('input', calculateNilai));
+
+    function saveStudentNilai() {
+        const s = DB_MURID.find(x => x.id == SISWA_TERPILIH_ID);
+        if(!s) return;
+        
+        if(!s.nilai) s.nilai = {};
+        const fields = ['n_s7','n_s8','n_s9','n_s10','n_s11','n_s12','n_us'];
+        fields.forEach(f => {
+            s.nilai[f] = document.getElementById(f).value;
+        });
+        s.nilai.akhir = document.getElementById('n_akhir').value;
+        
+        saveToLocal();
+        alert('Nilai Akurat Berhasil Disimpan!');
+    }
+
+    // --- CETAK & BARCODE ---
+    function preparePrint(type) {
+        if(!SISWA_TERPILIH_ID) return alert('Pilih siswa terlebih dahulu!');
+        const s = DB_MURID.find(x => x.id == SISWA_TERPILIH_ID);
+        
+        // Generate Barcode NISN di hidden element
+        const qrDiv = document.getElementById("qrcode");
+        qrDiv.innerHTML = "";
+        new QRCode(qrDiv, { text: s.nisn, width: 80, height: 80 });
+
+        setTimeout(() => {
+            const qrData = qrDiv.querySelector('img').src;
+            doPrint(type, s, qrData);
+        }, 300);
+    }
+
+    function doPrint(type, s, qr) {
+        const win = window.open('', '_blank');
+        const kop = `
+            <div style="display:flex; align-items:center; border-bottom:3px solid #000; padding-bottom:10px; margin-bottom:20px;">
+                <img src="https://freeimghost.com/images/2026/01/22/Kabupaten-Bekasi.md.png" style="width:80px; margin-right:20px;">
+                <div style="text-align:center; flex:1;">
+                    <h3 style="margin:0">PEMERINTAH KABUPATEN ${APP_CONFIG.sk_kab || 'BEKASI'}</h3>
+                    <h3 style="margin:0">DINAS PENDIDIKAN</h3>
+                    <h2 style="margin:0">${APP_CONFIG.sk_nama || 'SDN MUARA BAKTI 01'}</h2>
+                    <p style="margin:0; font-size:10pt;">Alamat: ${APP_CONFIG.sk_alamat || '-'}, Desa ${APP_CONFIG.sk_desa || '-'}, Kec. ${APP_CONFIG.sk_kec || '-'}</p>
+                    <p style="margin:0; font-size:10pt;">Email: ${APP_CONFIG.sk_email || '-'} | NPSN: ${APP_CONFIG.sk_npsn || '-'}</p>
+                </div>
+            </div>
+        `;
+
+        const footer = `
+            <div style="margin-top:50px; float:right; text-align:center; width:250px;">
+                <p>${APP_CONFIG.ks_kota || 'Bekasi'}, ${APP_CONFIG.ks_tglsurat || '-'}<br>Kepala Sekolah,</p>
+                <div style="height:70px"></div>
+                <p><b><u>${APP_CONFIG.ks_nama || 'ROHIMAH, S.Pd'}</u></b><br>NIP. ${APP_CONFIG.ks_nip || '-'}</p>
+            </div>
+        `;
+
+        let content = "";
+        if(type === 'nisn') {
+            content = `
+                ${kop}
+                <h3 style="text-align:center; text-decoration:underline; margin-bottom:0;">SURAT KETERANGAN NISN</h3>
+                <p style="text-align:center; margin-top:5px;">Nomor: ${APP_CONFIG.ks_nosurat || '-'}</p>
+                <p>Menerangkan bahwa :</p>
+                <table style="width:100%; margin:20px 0;">
+                    <tr><td width="30%">Nama</td><td>: <b>${s.nama}</b></td></tr>
+                    <tr><td>NISN</td><td>: ${s.nisn}</td></tr>
+                    <tr><td>Tempat/Tgl Lahir</td><td>: ${s.tmp_lahir}, ${s.tgl_lahir}</td></tr>
+                    <tr><td>Alamat</td><td>: ${s.alamat}</td></tr>
+                </table>
+                <p>${APP_CONFIG.red_skkb || 'Adalah benar pemilik NISN tersebut.'}</p>
+                <div style="border:2px solid #000; padding:15px; text-align:center; font-size:24pt; font-weight:bold; margin:20px auto; width:50%; background:#f0f0f0;">
+                    ${s.nisn}
+                </div>
+                <div style="margin-top:20px;">
+                    <img src="${qr}" style="border:1px solid #ddd; padding:5px;">
+                    <p style="font-size:8pt; margin:0;">Validasi Digital</p>
+                </div>
+                ${footer}
+            `;
+        } else if(type === 'cover') {
+             content = `
+                <div style="border:10px double #D21F3C; height:900px; padding:50px; text-align:center; position:relative;">
+                    <img src="https://freeimghost.com/images/2026/01/22/Kabupaten-Bekasi.md.png" style="width:150px; margin-top:50px;">
+                    <h1 style="margin-top:40px; font-size:35pt;">LAPORAN HASIL BELAJAR</h1>
+                    <h2 style="font-size:25pt;">${APP_CONFIG.sk_nama || 'SEKOLAH DASAR'}</h2>
+                    <div style="margin-top:100px; border:2px solid #000; padding:30px; display:inline-block; min-width:300px;">
+                        <p style="font-size:15pt; margin-bottom:5px;">NAMA SISWA:</p>
+                        <h2 style="margin-top:0;">${s.nama.toUpperCase()}</h2>
+                        <hr>
+                        <p style="font-size:15pt; margin-bottom:5px;">NISN / NIS:</p>
+                        <h3>${s.nisn} / ${s.nis}</h3>
+                    </div>
+                    <div style="position:absolute; bottom:50px; left:0; right:0;">
+                        <h3>TAHUN PELAJARAN ${APP_CONFIG.sk_tp}</h3>
+                    </div>
+                </div>
+             `;
+        } else {
+            content = `${kop} <h3 style="text-align:center;">DOKUMEN ${type.toUpperCase()}</h3> <p>Sedang dalam pengembangan template spesifik...</p> ${footer}`;
+        }
+
+        win.document.write(`<html><head><style>body{font-family:serif; padding:20px;}</style></head><body>${content}</body></html>`);
+        win.document.close();
+        win.print();
+    }
+
+    // --- BACKUP & RESTORE ---
+    function backupData() {
+        const data = { murid: DB_MURID, config: APP_CONFIG };
+        const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Backup_SIAKAD_${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+    }
+
+    function restoreData(e) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            const data = JSON.parse(evt.target.result);
+            DB_MURID = data.murid || [];
+            APP_CONFIG = data.config || {};
+            saveToLocal();
+            location.reload();
+        };
+        reader.readAsText(e.target.files[0]);
+    }
+
+    function saveToLocal() {
+        localStorage.setItem('siakad_db_murid', JSON.stringify(DB_MURID));
+        localStorage.setItem('siakad_config', JSON.stringify(APP_CONFIG));
+    }
+
+    window.onload = () => {
+        renderStudents();
+        renderGlobalSelector();
+        // Fill initial configs
+        Object.keys(APP_CONFIG).forEach(k => {
+            const el = document.getElementById(k);
+            if(el) el.value = APP_CONFIG[k];
+        });
+    };
 </script>
 </body>
 </html>
