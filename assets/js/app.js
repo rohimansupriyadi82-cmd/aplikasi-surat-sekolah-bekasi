@@ -1,78 +1,71 @@
-/* FILE: assets/js/app.js
-   Fungsi: Logika Rumus Nilai, Barcode, Import CSV, dan Cetak F4
-*/
-
-// 1. RUMUS PERHITUNGAN NILAI AKURAT (Sesuai Permintaan)
-function hitungNilaiSiswa(raport, us, ki3, ki4) {
-    // Bobot Nilai (Bisa diedit di menu Pengaturan nantinya)
-    const bobot = {
-        raport: 0.6, // 60%
-        ujian: 0.4,  // 40%
-        ki3: 0.5,    // 50%
-        ki4: 0.5     // 50%
-    };
-
-    // Rumus Nilai Akhir
-    const nilaiAkhir = (raport * bobot.raport) + (us * bobot.ujian);
-    
-    // Rumus Nilai Pengetahuan
-    const nilaiPengetahuan = (ki3 * bobot.ki3) + (ki4 * bobot.ki4);
-
-    return {
-        akhir: nilaiAkhir.toFixed(2),
-        pengetahuan: nilaiPengetahuan.toFixed(2)
-    };
-}
-
-// 2. GENERATE BARCODE (Untuk Validasi Surat)
-function buatBarcode(idElemen, dataSiswa) {
-    // Memerlukan library JsBarcode yang sudah dipanggil di index.html
-    if (window.JsBarcode) {
-        JsBarcode("#" + idElemen, dataSiswa, {
-            format: "CODE128",
-            lineColor: "#000",
-            width: 1.5,
-            height: 40,
-            displayValue: true,
-            fontSize: 12
-        });
-    }
-}
-
-// 3. FUNGSI IMPORT DATA CSV
+// Fungsi Import CSV yang disesuaikan dengan format screenshot kamu
 function importCSV(event) {
     const file = event.target.files[0];
     const reader = new FileReader();
+
     reader.onload = function(e) {
-        const baris = e.target.result.split("\n");
-        console.log("Data CSV terbaca:", baris.length, "baris.");
-        alert("Berhasil mengimpor " + (baris.length - 1) + " data murid!");
-        // Logika memasukkan data ke tabel/database lokal di sini
+        const content = e.target.result;
+        const lines = content.split("\n");
+        const dataMurid = [];
+
+        // Dimulai dari indeks 1 untuk melewati baris judul (header)
+        for (let i = 1; i < lines.length; i++) {
+            if (lines[i].trim() === "") continue;
+
+            const kolom = lines[i].split(","); // Asumsi pemisah adalah koma
+            
+            // Mapping sesuai urutan di screenshot kamu
+            const murid = {
+                no_peserta: kolom[0],
+                nisn: kolom[1],
+                nis: kolom[2],
+                nama: kolom[3],
+                jk: kolom[4],
+                tmp_lahir: kolom[5],
+                tgl_lahir: kolom[6],
+                ayah: kolom[7],
+                ibu: kolom[8],
+                seri_ijazah: kolom[9],
+                ortu_ijazah: kolom[10]
+            };
+            dataMurid.push(murid);
+        }
+
+        // Simpan ke LocalStorage agar tidak hilang saat refresh
+        localStorage.setItem('database_murid', JSON.stringify(dataMurid));
+        
+        // Perbarui tampilan dropdown di index.html
+        updateDropdownMurid(dataMurid);
+        
+        alert("Berhasil mengimpor " + dataMurid.length + " data murid!");
     };
     reader.readAsText(file);
 }
 
-// 4. LOGIKA CETAK PRESISI F4
-function jalankanCetak() {
-    // Tambahkan class khusus cetak ke body
-    document.body.classList.add('sedang-mencetak');
-    window.print();
-    // Hapus class setelah selesai/batal cetak
-    window.onafterprint = function() {
-        document.body.classList.remove('sedang-mencetak');
-    };
+// Fungsi untuk mengisi dropdown "Cari Nama Anak"
+function updateDropdownMurid(data) {
+    const select = document.querySelector('#murid select');
+    if (!select) return;
+
+    // Bersihkan dropdown kecuali pilihan pertama
+    select.innerHTML = '<option>-- Cari Nama Anak --</option>';
+
+    data.forEach((m, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = m.nama + " (" + m.nisn + ")";
+        select.appendChild(option);
+    });
 }
 
-// Event Listener untuk Tombol Simpan (Global)
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('btn-simpan')) {
-        // Simulasi proses simpan
-        const originalText = e.target.innerHTML;
-        e.target.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
-        
-        setTimeout(() => {
-            e.target.innerHTML = originalText;
-            alert("Data Berhasil Disimpan dengan Akurat!");
-        }, 800);
+// Tambahkan listener agar saat nama dipilih, form otomatis terisi
+document.querySelector('#murid select')?.addEventListener('change', function(e) {
+    const data = JSON.parse(localStorage.getItem('database_murid'));
+    const terpilih = data[e.target.value];
+
+    if (terpilih) {
+        document.querySelector('input[name="nisn"]').value = terpilih.nisn;
+        document.querySelector('input[name="nama"]').value = terpilih.nama;
+        // Tambahkan input lainnya di sini agar otomatis terisi
     }
 });
