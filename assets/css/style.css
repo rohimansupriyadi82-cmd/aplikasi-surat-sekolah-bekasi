@@ -1,0 +1,85 @@
+/* Custom Style: Merah Candy Bekasi */
+:root {
+    --merah-candy: #D21F3C;
+    --merah-gelap: #9b172d;
+    --putih: #ffffff;
+    --abu-muda: #f4f4f4;
+}
+
+body {
+    background-color: var(--merah-candy); /* Background utama Merah Candy */
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    background-color: var(--merah-gelap) !important;
+    min-height: 100vh;
+    color: white;
+    padding-top: 20px;
+}
+
+.nav-link {
+    color: rgba(255,255,255,0.8);
+    transition: 0.3s;
+    border-radius: 5px;
+    margin: 5px 15px;
+}
+
+.nav-link:hover {
+    background-color: rgba(255,255,255,0.2);
+    color: white;
+}
+
+/* Card Styling agar menyesuaikan dengan background merah */
+.card-custom {
+    background: var(--putih);
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+
+.card-header-custom {
+    background-color: var(--abu-muda);
+    border-bottom: 2px solid var(--merah-candy);
+    color: var(--merah-candy);
+    font-weight: bold;
+}
+
+/* Tombol Simpan Manis */
+.btn-simpan {
+    background-color: var(--merah-candy);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-simpan:hover {
+    background-color: #ff2e4e;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    color: white;
+}
+
+/* Input Form Focus */
+.form-control:focus {
+    border-color: var(--merah-candy);
+    box-shadow: 0 0 0 0.25rem rgba(210, 31, 60, 0.25);
+}
+
+/* Ukuran Kertas F4 untuk Preview */
+.kertas-f4 {
+    width: 210mm;
+    height: 330mm;
+    background: white;
+    margin: auto;
+    padding: 20mm;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
