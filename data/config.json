@@ -1,0 +1,23 @@
+{
+  "sekolah": {
+    "nama": "SDN MUARA BAKTI 01",
+    "npsn": "20218290",
+    "alamat": "Jl. Bayangkara Rt. 12/07 Ds. Muara bakti",
+    "kecamatan": "Babelan",
+    "kabupaten": "Bekasi",
+    "provinsi": "Jawa Barat",
+    "kurikulum": "Kurikulum Merdeka",
+    "tahun_pelajaran": "2025/2026"
+  },
+  "kepsek": {
+    "nama": "TATI LESTARI, S.Pd",
+    "nip": "197712092008012004",
+    "kota_surat": "Bekasi"
+  },
+  "bobot": {
+    "raport": 60,
+    "ujian": 40,
+    "ki3": 50,
+    "ki4": 50
+  }
+}
