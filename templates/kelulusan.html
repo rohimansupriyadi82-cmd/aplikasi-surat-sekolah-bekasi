@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Cetak Surat Kelulusan</title>
+    <style>
+        /* Pengaturan Kertas F4 Presisi */
+        @page { size: 210mm 330mm; margin: 15mm; }
+        body { font-family: "Times New Roman", serif; background: white; margin: 0; padding: 0; }
+        
+        .kertas-f4 { width: 210mm; min-height: 330mm; padding: 20mm; margin: auto; box-sizing: border-box; position: relative; }
+        
+        /* Kop Surat */
+        .kop-surat { border-bottom: 4px double black; display: flex; align-items: center; padding-bottom: 5px; margin-bottom: 20px; }
+        .logo-bekasi { width: 80px; height: auto; margin-right: 20px; }
+        .teks-kop { text-align: center; flex-grow: 1; text-transform: uppercase; }
+        .teks-kop h2, .teks-kop h3 { margin: 0; padding: 0; }
+
+        /* Isi Surat */
+        .judul-surat { text-align: center; text-decoration: underline; margin-top: 20px; font-weight: bold; }
+        .nomor-surat { text-align: center; margin-bottom: 30px; }
+        .isi-teks { line-height: 1.6; text-align: justify; }
+        
+        /* Barcode & Tanda Tangan */
+        .footer-surat { margin-top: 50px; display: flex; justify-content: space-between; align-items: flex-end; }
+        #barcode { margin-bottom: -10px; }
+        .ttd { text-align: left; width: 200px; }
+    </style>
+</head>
+<body>
+
+<div class="kertas-f4">
+    <div class="kop-surat">
+        <img src="../assets/img/logo-bekasi.png" class="logo-bekasi">
+        <div class="teks-kop">
+            <h3>Pemerintah Kabupaten Bekasi</h3>
+            <h2>Dinas Pendidikan</h2>
+            <h2 id="view-nama-sekolah">SDN BEKASI XX</h2>
+            <p style="text-transform: none; font-size: 12px;">Alamat: [Alamat Sekolah Lengkap], Bekasi</p>
+        </div>
+    </div>
+
+    <div class="judul-surat">SURAT KETERANGAN LULUS</div>
+    <div class="nomor-surat">Nomor: <span id="view-no-surat">421/001/2026</span></div>
+
+    <div class="isi-teks">
+        <p>Kepala Sekolah <span id="view-nama-sekolah2">SDN BEKASI XX</span> menerangkan bahwa:</p>
+        <table style="margin-left: 30px; margin-bottom: 20px;">
+            <tr><td>Nama</td><td>:</td><td id="view-nama-siswa">BUDI SANTOSO</td></tr>
+            <tr><td>NISN / NIS</td><td>:</td><td id="view-nisn">001234567 / 12345</td></tr>
+            <tr><td>Tempat, Tgl Lahir</td><td>:</td><td id="view-ttl">Bekasi, 10 Mei 2012</td></tr>
+        </table>
+        <p>Berdasarkan kriteria kelulusan yang telah ditetapkan, maka siswa tersebut di atas dinyatakan:</p>
+        <h3 style="text-align: center; letter-spacing: 5px;">LULUS</h3>
+    </div>
+
+    <div class="footer-surat">
+        <div class="barcode-area">
+            <svg id="barcode"></svg>
+            <p style="font-size: 9px;">Validasi Digital Dokumen Resmi</p>
+        </div>
+        <div class="ttd">
+            <p id="view-kota-tgl">Bekasi, 15 Juni 2026</p>
+            <p>Kepala Sekolah,</p>
+            <br><br><br>
+            <p><strong><span id="view-nama-kepsek">NAMA KEPALA SEKOLAH</span></strong><br>NIP. <span id="view-nip-kepsek">1980...</span></p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script>
+    // Contoh cara panggil barcode otomatis saat halaman dibuka
+    JsBarcode("#barcode", "001234567-BUDI", {
+        width: 1,
+        height: 35,
+        fontSize: 10
+    });
+</script>
+
+</body>
+</html>
