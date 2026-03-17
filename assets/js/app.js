@@ -1,21 +1,20 @@
-// Fungsi Import CSV yang disesuaikan dengan format screenshot kamu
 function importCSV(event) {
     const file = event.target.files[0];
     const reader = new FileReader();
 
     reader.onload = function(e) {
-        const content = e.target.result;
-        const lines = content.split("\n");
+        const lines = e.target.result.split("\n");
         const dataMurid = [];
 
-        // Dimulai dari indeks 1 untuk melewati baris judul (header)
+        // Loop mulai dari baris kedua (indeks 1) untuk melewati judul kolom
         for (let i = 1; i < lines.length; i++) {
             if (lines[i].trim() === "") continue;
 
-            const kolom = lines[i].split(","); // Asumsi pemisah adalah koma
+            // Memisahkan kolom dengan koma
+            const kolom = lines[i].split(",");
             
-            // Mapping sesuai urutan di screenshot kamu
-            const murid = {
+            // Mapping data sesuai urutan screenshot CSV Anda
+            dataMurid.push({
                 no_peserta: kolom[0],
                 nisn: kolom[1],
                 nis: kolom[2],
@@ -25,47 +24,41 @@ function importCSV(event) {
                 tgl_lahir: kolom[6],
                 ayah: kolom[7],
                 ibu: kolom[8],
-                seri_ijazah: kolom[9],
+                ijazah: kolom[9],
                 ortu_ijazah: kolom[10]
-            };
-            dataMurid.push(murid);
+            });
         }
 
-        // Simpan ke LocalStorage agar tidak hilang saat refresh
+        // Simpan ke memori browser
         localStorage.setItem('database_murid', JSON.stringify(dataMurid));
         
-        // Perbarui tampilan dropdown di index.html
-        updateDropdownMurid(dataMurid);
-        
-        alert("Berhasil mengimpor " + dataMurid.length + " data murid!");
+        // Panggil fungsi untuk mengisi dropdown
+        tampilkanKeDropdown(dataMurid);
+        alert("Berhasil memuat " + dataMurid.length + " data murid.");
     };
     reader.readAsText(file);
 }
 
-// Fungsi untuk mengisi dropdown "Cari Nama Anak"
-function updateDropdownMurid(data) {
-    const select = document.querySelector('#murid select');
-    if (!select) return;
+function tampilkanKeDropdown(data) {
+    const dropdown = document.getElementById('select-murid');
+    dropdown.innerHTML = '<option value="">-- Cari Nama Anak --</option>';
 
-    // Bersihkan dropdown kecuali pilihan pertama
-    select.innerHTML = '<option>-- Cari Nama Anak --</option>';
-
-    data.forEach((m, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = m.nama + " (" + m.nisn + ")";
-        select.appendChild(option);
+    data.forEach((item, index) => {
+        const opt = document.createElement('option');
+        opt.value = index;
+        opt.textContent = item.nama; // Menampilkan Nama Peserta di dropdown
+        dropdown.appendChild(opt);
     });
 }
 
-// Tambahkan listener agar saat nama dipilih, form otomatis terisi
-document.querySelector('#murid select')?.addEventListener('change', function(e) {
+// Event listener saat nama dipilih di dropdown
+document.getElementById('select-murid')?.addEventListener('change', function() {
     const data = JSON.parse(localStorage.getItem('database_murid'));
-    const terpilih = data[e.target.value];
+    const dipilih = data[this.value];
 
-    if (terpilih) {
-        document.querySelector('input[name="nisn"]').value = terpilih.nisn;
-        document.querySelector('input[name="nama"]').value = terpilih.nama;
-        // Tambahkan input lainnya di sini agar otomatis terisi
+    if (dipilih) {
+        // Isi otomatis ke input field
+        document.getElementById('input-nisn').value = dipilih.nisn;
+        document.getElementById('input-nama').value = dipilih.nama;
     }
 });
