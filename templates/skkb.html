@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Cetak SKKB - SIAKAD Bekasi</title>
+    <style>
+        /* Pengaturan Kertas F4 Presisi */
+        @page { 
+            size: 210mm 330mm; 
+            margin: 20mm; 
+        }
+
+        body { 
+            font-family: "Times New Roman", Times, serif; 
+            background: #eee; 
+            margin: 0; 
+            padding: 0; 
+            font-size: 12pt;
+        }
+
+        .kertas-f4 { 
+            width: 210mm; 
+            min-height: 330mm; 
+            padding: 20mm; 
+            margin: 10mm auto; 
+            background: white;
+            box-sizing: border-box;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        /* Styling Judul */
+        .judul-area {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .judul-utama {
+            font-size: 16pt;
+            font-weight: bold;
+            text-decoration: underline;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .nomor-surat {
+            font-size: 12pt;
+            font-weight: bold;
+            margin: 5px 0 0 0;
+        }
+
+        /* Konten Surat */
+        .paragraf {
+            text-align: justify;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+
+        /* Tabel Data Siswa */
+        .tabel-data {
+            margin: 20px 0 20px 30px;
+            width: 100%;
+        }
+
+        .tabel-data td {
+            padding: 3px 5px;
+            vertical-align: top;
+        }
+
+        .label-data {
+            width: 180px;
+        }
+
+        .titik-dua {
+            width: 10px;
+        }
+
+        .isi-data {
+            font-weight: normal;
+        }
+
+        .nama-bold {
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Footer / Tanda Tangan */
+        .footer-area {
+            margin-top: 50px;
+            float: right;
+            width: 250px;
+            text-align: center;
+        }
+
+        .barcode-area {
+            position: absolute;
+            bottom: 40mm;
+            left: 20mm;
+        }
+
+        .clear { clear: both; }
+
+        @media print {
+            body { background: none; }
+            .kertas-f4 { margin: 0; box-shadow: none; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="kertas-f4">
+    <div class="judul-area">
+        <p class="judul-utama">SURAT KETERANGAN KELAKUAN BAIK</p>
+        <p class="nomor-surat">Nomor : <span id="view-no-surat">400.3.12.1/040/SD.37/VI/2025</span></p>
+    </div>
+
+    <div class="paragraf">
+        Yang bertandatangan dibawah ini Kepala <span id="view-sekolah">SDN MUARA BAKTI 01</span> Kecamatan 
+        Babelan Kab. Bekasi menerangkan bahwa :
+    </div>
+
+    <table class="tabel-data">
+        <tr>
+            <td class="label-data">Nama</td>
+            <td class="titik-dua">:</td>
+            <td class="isi-data nama-bold"><span id="view-nama">ZAHRA MEILYA HIDAYAT</span></td>
+        </tr>
+        <tr>
+            <td>Nomer Perserta Ujian</td>
+            <td>:</td>
+            <td class="isi-data"><span id="view-no-peserta">12-064-49-9</span></td>
+        </tr>
+        <tr>
+            <td>Tempat dan Tanggal Lahir</td>
+            <td>:</td>
+            <td class="isi-data"><span id="view-ttl">Bekasi, 1 Mei 2012</span></td>
+        </tr>
+        <tr>
+            <td>Jenis Kelamin</td>
+            <td>:</td>
+            <td class="isi-data"><span id="view-jk">Perempuan</span></td>
+        </tr>
+        <tr>
+            <td>Nomor Induk Siswa</td>
+            <td>:</td>
+            <td class="isi-data"><span id="view-nis">192001044</span></td>
+        </tr>
+        <tr>
+            <td>NISN</td>
+            <td>:</td>
+            <td class="isi-data"><span id="view-nisn">3128689086</span></td>
+        </tr>
+        <tr>
+            <td>Asal Sekolah</td>
+            <td>:</td>
+            <td class="isi-data"><span id="view-asal-sekolah">SDN MUARA BAKTI 01</span></td>
+        </tr>
+        <tr>
+            <td>Nama Orang Tua/Wali</td>
+            <td>:</td>
+            <td class="isi-data"><span id="view-ortu">Topan Hidayat</span></td>
+        </tr>
+    </table>
+
+    <div class="paragraf">
+        Adalah benar nama tersebut di atas berasal dari <span id="view-sekolah2">SDN MUARA BAKTI 01</span> Tahun 
+        Pelajaran <span id="view-tp">2024/2025</span> Berdasarkan catatan pada kami, selama menjadi siswa di 
+        <span id="view-sekolah3">SDN MUARA BAKTI 01</span>, Dinas Pendidikan Kab. Bekasi, Peserta didik tersebut berkelakuan 
+        baik dan tidak mencemarkan nama baik sekolah serta tidak terlibat pada penyalahgunaan 
+        Narkotika, Alkohol, Psikotrapika, dan Zat Aditif lainnya (NAPZA) yang dapat merusak 
+        moral dan kesehatan.
+    </div>
+
+    <div class="paragraf">
+        Demikian surat keterangan ini dibuat untuk dipergunakan sebagai bahan persyaratan 
+        mengikuti seleksi Penerimaan Peserta Didik Baru (PPDB) pada sekolah lanjutan.
+    </div>
+
+    <div class="footer-area">
+        <p>Bekasi, <span id="view-tgl-surat">02 Juni 2025</span></p>
+        <p>Kepala Sekolah</p>
+        <br><br><br><br>
+        <p><strong><u><span id="view-nama-kepsek">ROHIMAH, S.Pd</span></u></strong><br>
+        NIP. <span id="view-nip-kepsek">19680604 200604 2 004</span></p>
+    </div>
+
+    <div class="barcode-area">
+        <svg id="barcode"></svg>
+        <p style="font-size: 8pt; margin: 0;">Validasi Digital Dokumen</p>
+    </div>
+
+    <div class="clear"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script>
+    // Generate barcode berdasarkan NISN secara otomatis
+    JsBarcode("#barcode", "3128689086", {
+        format: "CODE128",
+        width: 1,
+        height: 30,
+        displayValue: false
+    });
+</script>
+
+</body>
+</html>
